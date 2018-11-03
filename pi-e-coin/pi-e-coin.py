@@ -7,8 +7,9 @@ import time
 
 coin = [math.pi, math.e]  # coin has values pi and e
 percentages = []  # stores percentages for given n_throws
-n = int(sys.argv[1])  # upper limit on number of throws
-N = int(sys.argv[2])  # number of repetitions for each n_throw
+l = int(sys.argv[1])  # lower limit on number of throws
+u = int(sys.argv[2])  # upper limit on number of throws
+N = int(sys.argv[3])  # number of repetitions for each n_throw
 
 start_time = time.clock()  # start time
 print 'Starting...'
@@ -16,10 +17,10 @@ print 'Starting...'
 try:
     # Loop through all possible number of throws. For each number of throws
     # repeat simulation N times. At the end save the histogram and sums generated.
-    for n_throws in range(1, n+1):
+    for n_throws in range(l, u+1):
         n_divisible_3 = 0  # count of sums that were divisible by 3
         sums = []  # stores all sums to plot histogram and save to csv
-    
+
         print '\nSimulating {0} coin flips {1} times... '.format(n_throws, N)
         if N > 10000:
             sys.stdout.write('[{}] 0.0%'.format(' '*50))
@@ -67,45 +68,36 @@ try:
         x_Limit = int(n_throws * math.pi)
         y_Limit = math.ceil(max(sums_occurences.values()) * 1.01)
         bins = x_Limit - x_limit + 1
-    
+
         plt.hist(sums, bins=bins)
         plt.xlabel('Sum')
         plt.ylabel('Number of occurences')
         plt.title(r'$\mathrm{Sums\ of\ coin\ flips\ with\ } \pi,e \mathrm{\ sides}$')
         plt.axis([x_limit, x_Limit, 0, y_Limit])
-        plt.xticks(range(x_limit, x_Limit+1))
+        plt.xticks(range(x_limit, x_Limit+1, max(1, (x_Limit - x_limit)/10)))
         plt.grid(True)
         plt.savefig('out/hist/hist_{0}_{1}.pdf'.format(N, n_throws))
         plt.clf()
         plt.close()
-        
+
     # Plot graph of percentages in relation to number of throws.
-    plt.plot(range(1, n+1), percentages, marker='o', markersize=2, linewidth=0.5)
+    plt.plot(range(l, u+1), percentages, marker='o', markersize=2, linewidth=0.5)
     plt.xlabel('Number of throws ($n$)')
     plt.ylabel('Percentage')
     plt.title('Percentage of sums divisible with 3 when throwing coin $n$ times')
     plt.grid(True)
-    plt.savefig('out/percentages/percentages_{0}_{1}.pdf'.format(N, n))
-
-    # Stop the clock and print execution time.
-    end_time = time.clock()
-    diff_time = round(end_time - start_time, 1)
-    print ''
-    if diff_time > 60:
-        diff_time = int(diff_time)
-        print 'Execution time: {0}m{1}s'.format(diff_time / 60, diff_time % 60)
-    else:
-        print 'Execution time: {}s'.format(diff_time)
+    plt.savefig('out/percentages/percentages_{0}_{1}-{2}.pdf'.format(N, l, u))
 
 except KeyboardInterrupt:
     # Plot graph of percentages in relation to number of throws.
-    plt.plot(range(1, len(percentages)+1), percentages, marker='o', markersize=2, linewidth=0.5)
+    plt.plot(range(l, l+len(percentages)), percentages, marker='o', markersize=2, linewidth=0.5)
     plt.xlabel('Number of throws ($n$)')
     plt.ylabel('Percentage')
     plt.title('Percentage of sums divisible with 3 when throwing coin $n$ times')
     plt.grid(True)
-    plt.savefig('out/percentages/percentages_{0}_{1}.pdf'.format(N, n))
+    plt.savefig('out/percentages/percentages_{0}_{1}-{2}.pdf'.format(N, l, l+len(percentages)))
 
+finally:
     # Stop the clock and print execution time.
     end_time = time.clock()
     diff_time = round(end_time - start_time, 1)
@@ -115,4 +107,3 @@ except KeyboardInterrupt:
         print 'Execution time: {0}m{1}s'.format(diff_time / 60, diff_time % 60)
     else:
         print 'Execution time: {}s'.format(diff_time)
-    
