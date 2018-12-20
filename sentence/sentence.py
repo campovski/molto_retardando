@@ -104,17 +104,17 @@ if __name__ == "__main__":
     print "Expected value of days spent in jail is {0} which is {1} years".format(int(E_days), int(E_days/365))
 
     plt.figure()
-    plt.hist(days_spent, bins=100)
+    plt.hist(days_spent, bins=1000)
     plt.title("Days spent in jail (E(X) = {0}), penalty = {1}, Y = {2}".format( \
-            E_days, penalty, Y))
+            int(E_days), penalty, Y))
     plt.xlabel("Days")
     plt.ylabel("Occurences")
     plt.tight_layout()
     plt.savefig("days_spent_hist_{0}_{1}.pdf".format(penalty, Y))
 
     plt.figure()
-    plt.hist(days_remaining, bins=100)
-    plt.title("Days remaining in jail")
+    plt.hist(days_remaining, bins=1000)
+    plt.title("Days remaining in jail, penalty = {0}, Y = {1}".format(penalty, Y))
     plt.xlabel("Days")
     plt.ylabel("Occurences")
     plt.tight_layout()
